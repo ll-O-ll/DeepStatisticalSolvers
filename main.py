@@ -6,12 +6,13 @@ import time
 import logging
 import argparse
 
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
+tf.disable_v2_behavior()
 # Get rid of the deprecation warnings
 tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
 import numpy as np
 
-from models.models import DeepStatisticalSolver 
+from models.models import DeepStatisticalSolver
 
 
 # Build parser
@@ -108,7 +109,7 @@ if __name__ == '__main__':
     formatter = logging.Formatter("%(asctime)s: %(message)s", datefmt='%Y-%m-%d %H:%M')
     handler.setFormatter(formatter)
     logger.addHandler(handler)
-    
+
     # If there is both a model to reload and some data to perform inference on
     if (args.infer_data is not None) and (args.result_dir is not None):
 
@@ -126,7 +127,7 @@ if __name__ == '__main__':
         logging.info('    Loss on test set : {}'.format(loss_test))
 
     else:
-        
+
         # Build model
         # If a model_to_reload directory has been specified, then the model will be reloaded
         # and training will start where it last stopped
@@ -148,7 +149,7 @@ if __name__ == '__main__':
         # Train model on the specified directory for data
         model.train(
             max_iter=args.max_iter,
-            learning_rate=args.learning_rate, 
+            learning_rate=args.learning_rate,
             discount=args.discount,
             data_directory=args.data_directory,
             save_step=args.track_validation,

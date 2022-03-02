@@ -1,7 +1,8 @@
 import sys
 import os
 
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
+tf.disable_v2_behavior()
 
 def custom_gather(params, indices_edges):
     """
@@ -22,10 +23,10 @@ def custom_gather(params, indices_edges):
     d_out = tf.shape(params)[2]                                         # tf.int32, [1]
 
     # Build indices for the batch dimension
-    indices_batch_float = tf.linspace(0., tf.cast(n_samples, tf.float32)-1., n_samples)         
+    indices_batch_float = tf.linspace(0., tf.cast(n_samples, tf.float32)-1., n_samples)
                                                                         # tf.float32, [n_samples]
     indices_batch = tf.cast(indices_batch_float, tf.int32)              # tf.int32, [n_samples]
-    indices_batch = tf.expand_dims(indices_batch, 1) * tf.ones([1, n_edges], dtype=tf.int32)    
+    indices_batch = tf.expand_dims(indices_batch, 1) * tf.ones([1, n_edges], dtype=tf.int32)
                                                                         # tf.int32, [n_samples, n_edges]
 
     # Flatten the indices
@@ -63,10 +64,10 @@ def custom_scatter(indices_edges, params, shape):
     d_F = tf.shape(params)[2]                                           # tf.int32, [1]
 
     # Build indices for the batch dimension
-    indices_batch_float = tf.linspace(0., tf.cast(n_samples, tf.float32)-1., n_samples)         
+    indices_batch_float = tf.linspace(0., tf.cast(n_samples, tf.float32)-1., n_samples)
                                                                         # tf.float32, [n_samples]
     indices_batch = tf.cast(indices_batch_float, tf.int32)              # tf.int32, [n_samples]
-    indices_batch = tf.expand_dims(indices_batch, 1) * tf.ones([1, n_edges], dtype=tf.int32)    
+    indices_batch = tf.expand_dims(indices_batch, 1) * tf.ones([1, n_edges], dtype=tf.int32)
                                                                         # tf.int32, [n_samples, n_edges]
 
     # Stack batch and edge dimensions
@@ -77,7 +78,7 @@ def custom_scatter(indices_edges, params, shape):
     params_flat = tf.reshape(params, [n_samples*n_edges, d_F])          # tf.float32, [n_samples * n_edges, d_F]
 
     # Perform the scatter operation
-    scattered_flat = tf.scatter_nd(indices_flat, params_flat, shape=[n_samples*n_nodes, d_F])   
+    scattered_flat = tf.scatter_nd(indices_flat, params_flat, shape=[n_samples*n_nodes, d_F])
                                                                         # tf.float32, [n_samples * n_nodes, d_F]
 
     # Un-flatten the result of the scatter operation
@@ -97,25 +98,25 @@ class FullyConnected:
         - output_dim : integer, dimension of the output; if not specified, set to latent_dimension
         - name : string, name of the neural network block
     """
-    
-    def __init__(self, 
+
+    def __init__(self,
         latent_dimension=10,
         hidden_layers=3,
-        non_lin='leaky_relu', 
+        non_lin='leaky_relu',
         input_dim=None,
-        output_dim=None, 
+        output_dim=None,
         name='encoder'):
-        
+
         # Get parameters
         self.latent_dimension = latent_dimension
         self.hidden_layers = hidden_layers
         self.name = name
         self.input_dim = input_dim
         self.output_dim = output_dim
-        
+
         # Initialize list of trainable variables of the layer
         self.trainable_variables = []
-        
+
         # Convert str into an actual tensorflow operator
         if non_lin == 'tanh':
             self.non_lin = tf.tanh
@@ -124,15 +125,15 @@ class FullyConnected:
 
         # Build weights
         self.build()
-        
+
     def build(self):
         """
         Builds and collects the weights of the neural network block.
         """
-        
+
         # Initialize weights dict
         self.W = {}
-        self.b = {} 
+        self.b = {}
 
         # Iterate over all layers
         for layer in range(self.hidden_layers):
@@ -148,7 +149,7 @@ class FullyConnected:
             # Initialize weight matrix
             self.W[str(layer)] = tf.compat.v1.get_variable(name='W_'+self.name+'_{}'.format(layer),
                 shape=[left_dim, right_dim],
-                initializer=tf.contrib.layers.xavier_initializer(dtype=tf.float32, uniform=False),
+                initializer=tf.keras.initializers.glorot_normal,
                 trainable=True,
                 dtype=tf.float32)
             self.trainable_variables.append(self.W[str(layer)])
@@ -156,12 +157,12 @@ class FullyConnected:
             # Initialize bias vector
             self.b[str(layer)] = tf.compat.v1.get_variable(name='b_'+self.name+'_{}'.format(layer),
                 shape=[1, right_dim],
-                initializer=tf.contrib.layers.xavier_initializer(dtype=tf.float32, uniform=False),
+                initializer=tf.keras.initializers.glorot_normal,
                 trainable=True,
                 dtype=tf.float32)
             self.trainable_variables.append(self.b[str(layer)])
 
-                            
+
     def __call__(self, h):
         """
         Builds the computational graph.
@@ -183,4 +184,3 @@ class FullyConnected:
                 h = self.non_lin(tf.matmul(h, self.W[str(layer)])+ self.b[str(layer)])
 
         return tf.reshape(h, [n_samples, n_elem, -1])
-

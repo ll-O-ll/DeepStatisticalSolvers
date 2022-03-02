@@ -8,10 +8,11 @@ import logging
 from tqdm import tqdm
 
 import numpy as np
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
+tf.disable_v2_behavior()
 from tensorflow.python.client import timeline
 
-from models.layers import FullyConnected, custom_gather, custom_scatter 
+from models.layers import FullyConnected, custom_gather, custom_scatter
 
 class DeepStatisticalSolver:
 
@@ -67,7 +68,7 @@ class DeepStatisticalSolver:
             self.set_config(config)
 
         else:
-        
+
             self.d_in_A = self.problem.d_in_A
             self.d_in_B = self.problem.d_in_B
             self.d_out = self.problem.d_out
@@ -165,7 +166,7 @@ class DeepStatisticalSolver:
         #     output_dim=self.d_out
         # )
 
-        
+
         #self.loss_function = self.cost_function EquilibriumViolation(self.default_data_directory)
 
     def build_graph(self, default_data_directory):
@@ -264,7 +265,7 @@ class DeepStatisticalSolver:
 
         # Initialize latent message and prediction to 0
         self.H['0'] = tf.zeros([self.minibatch_size_tf, self.num_nodes, self.latent_dimension])
-        
+
         # Decode the first message. Although this step useless, it is still there for compatibility issues
         self.U['0'] = self.xi['0'](self.H['0']) + self.initial_U_tf
 
@@ -285,16 +286,16 @@ class DeepStatisticalSolver:
 
             # Get the sum of each transformed messages at each node
             self.Phi_from_sum = custom_scatter(
-                self.indices_from, 
-                self.Phi_from, 
+                self.indices_from,
+                self.Phi_from,
                 [self.minibatch_size_tf, self.num_nodes, self.latent_dimension])
             self.Phi_to_sum = custom_scatter(
-                self.indices_to, 
-                self.Phi_to, 
+                self.indices_to,
+                self.Phi_to,
                 [self.minibatch_size_tf, self.num_nodes, self.latent_dimension])
             self.Phi_loop_sum = custom_scatter(
-                self.indices_to, 
-                self.Phi_loop, 
+                self.indices_to,
+                self.Phi_loop,
                 [self.minibatch_size_tf, self.num_nodes, self.latent_dimension])
 
             # Concatenate all the inputs of the correction neural network
@@ -373,7 +374,7 @@ class DeepStatisticalSolver:
         for update in range(self.correction_updates+1):
             self.trainable_variables.extend(self.xi[str(update)].trainable_variables)
 
-        
+
 
     def log_config(self):
         """
@@ -454,7 +455,7 @@ class DeepStatisticalSolver:
             'B_mean': list(self.B_mean),
             'B_std': list(self.B_std),
             'proxy': self.proxy
-        } 
+        }
         return config
 
     def save(self):
@@ -474,9 +475,9 @@ class DeepStatisticalSolver:
         saver.save(self.sess, path_to_weights)
 
 
-    def train(self, 
+    def train(self,
         max_iter=10,
-        learning_rate=3e-4, 
+        learning_rate=3e-4,
         discount=0.9,
         data_directory='datasets/spring/default',
         save_step=None,
@@ -590,12 +591,3 @@ class DeepStatisticalSolver:
         np.save(os.path.join(self.directory, 'X_final_pred_'+mode+'.npy'), X_final)
 
         return loss
-
-
-
-
-
-
-
-
-
