@@ -499,13 +499,17 @@ class DeepStatisticalSolver:
         # Load dataset
         self.sess.run(self.training_init_op)
 
+        # Write the summaries to disk in a logs directory
+
+        logs_dir = os.path.join(self.directory, "logs")
+
         # Build writer dedicated to training for Tensorboard
         self.training_writer = tf.compat.v1.summary.FileWriter(
-            os.path.join(self.directory, 'train'))
+            os.path.join(logs_dir, 'train'))
 
         # Build writer dedicated to validation for Tensorboard
         self.validation_writer = tf.compat.v1.summary.FileWriter(
-            os.path.join(self.directory, 'val'))
+            os.path.join(logs_dir, 'val'))
 
         # Set discount factor and learning rate
         self.sess.run(self.discount.assign(discount))
