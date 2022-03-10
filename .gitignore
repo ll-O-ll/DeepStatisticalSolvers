@@ -2,4 +2,4 @@
 /datasets
 /ENV
 /models/__pycache__
-
+*.out
