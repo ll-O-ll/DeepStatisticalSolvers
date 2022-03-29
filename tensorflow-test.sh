@@ -11,9 +11,9 @@
 module load cuda cudnn 
 source ENV/bin/activate
 # python ./tensorflow-test.py
-rm -rf ./results/ # clear any results from previous runs
-$MOREF =`ls -t ./results | head -1` 
-tensorboard --logdir="./results/$MOREF/logs/" --host 0.0.0.0 --load_fast false &
-python ./main.py --data_dir=datasets/acpf_14 --learning_rate=3e-3 --minibatch_size=1000 --alpha=1e-2 --hidden_layers=2 --latent_dimension=10 --correction_updates=10 --track_validation=1000
+# rm -rf ./results/ # clear any results from previous runs
+# $MOREF =`ls -t ./results | head -1` 
+tensorboard --logdir="./exp1/logs/" --host 0.0.0.0 --load_fast false &
+python ./main.py --data_dir=datasets/acpf_14 --learning_rate=3e-3 --minibatch_size=1000 --alpha=1e-2 --hidden_layers=2 --latent_dimension=10 --correction_updates=10 --track_validation=1000 --result_dir=exp1/
 
 
