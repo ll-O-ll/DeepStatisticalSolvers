@@ -2,6 +2,7 @@
 
 # Link to Ahmed Rosanally's contributive work
 
+[Accelerating Power Flow Calculations Using Traditional Solvers and Neural Networks - Ahmed Rosanally](Accelerating Power Flow Calculations Using Traditional Solvers and Neural Networks - Ahmed Rosanally.pdf)
 
 This repository is the official implementation of [Deep Statistical Solvers](https://hal.inria.fr/hal-02974541) (accepted at NeurIPS 2020).
 
