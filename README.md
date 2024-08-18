@@ -1,8 +1,9 @@
 # Deep Statistical Solver
 
-# Link to Ahmed Rosanally's contributive work
+## Link to Ahmed Rosanally's contributive work
 
 [Accelerating Power Flow Calculations Using Traditional Solvers and Neural Networks - Ahmed Rosanally.pdf](https://github.com/ll-O-ll/DeepStatisticalSolvers/blob/master/Accelerating%20Power%20Flow%20Calculations%20Using%20Traditional%20Solvers%20and%20Neural%20Networks%20-%20Ahmed%20Rosanally.pdf)
+
 
 This repository is the official implementation of [Deep Statistical Solvers](https://hal.inria.fr/hal-02974541) (accepted at NeurIPS 2020).
 
