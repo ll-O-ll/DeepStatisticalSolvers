@@ -1,5 +1,8 @@
 # Deep Statistical Solver
 
+# Link to Ahmed Rosanally's contributive work
+
+
 This repository is the official implementation of [Deep Statistical Solvers](https://hal.inria.fr/hal-02974541) (accepted at NeurIPS 2020).
 
 The higher level ideas are located at the [Graph Neural Solver](https://hal.archives-ouvertes.fr/hal-02372741/document) paper (accepted at PSCC 2020).
